@@ -63,11 +63,10 @@ void print_map(int n,block map[n][n]){
 }
 
 cell * head = NULL;
-int main() {
+int main() { 
     srand(time(NULL));
     while(1){
         game.load=false;
-        
         game.single_player=true;
         int menu_input = show_menu();
         switch(menu_input){
@@ -80,13 +79,17 @@ int main() {
                     game.single_player=false;
             case 2:;
                 FILE* ptf;
+				head=NULL;
                 if(!game.load){
-                	head = NULL;
                     char str[100];
                     scanf("%s",str);
                     ptf =fopen(str,"rb");
-                    fread(&n, sizeof(n),1,ptf);
                 }
+                else
+                {
+                	ptf=fopen("save_map.bin","rb");
+				}
+				fread(&n,sizeof(n),1,ptf);
                 block arr_block[n][n];
                 if(!game.load){
                     forfor(n){
@@ -99,21 +102,43 @@ int main() {
                         arr_block[i][j].block_energy = 100;
                         arr_block[i][j].mycell=NULL;
                     }
-                    fclose(ptf);
-                    scanf("%d",&s);
-                    
-                    for(int k = 0;k<s;k++)
+                	}
+                    else
                     {
-                        int i=rand()%n;
-                        int j=rand()%n;
-                        while(!isEmpty(i,j,arr_block)){
-                            i=rand()%n;
-                            j=rand()%n;
-                        }
-                        cell* new_cell = add(80,i,j);
-                        new_cell->owner = 'X';
-                        arr_block[i][j].mycell = new_cell;
-                    }
+                    	forfor(n)
+                    	fread(&arr_block[i][j],sizeof(block),1,ptf);
+					}
+                    fclose(ptf);
+                    
+                    if(game.load)
+                    {
+                    	ptf = fopen("save_cell.bin","rb");
+                    	cell temp;
+                    	
+                    	while(!feof(ptf))
+                    	{
+                    		fread(&temp,sizeof(cell),1,ptf);
+                    		cell * new_cell = add(temp.cell_energy,temp.x,temp.y);
+                    		new_cell->owner = temp.owner;
+                    		arr_block[new_cell->x][new_cell->y].mycell = new_cell;
+						}
+					}
+					else
+					{
+						scanf("%d",&s);
+	                    for(int k = 0;k<s;k++)
+	                    {
+	                        int i=rand()%n;
+	                        int j=rand()%n;
+	                        while(!isEmpty(i,j,arr_block)){
+	                            i=rand()%n;
+	                            j=rand()%n;
+	                        }
+	                        cell* new_cell = add(40,i,j);
+	                        new_cell->owner = 'X';
+	                        arr_block[i][j].mycell = new_cell;
+	                    }
+					}
 					
 					while(1)
 					{
@@ -354,14 +379,13 @@ int main() {
 							}
 							fclose(f);
 						}
+						if(q==5)exit(0);
 					}
                 }
                 break;
 
         }
     }
-    return 0;
-}
 bool isEmpty(int x,int y,block map[n][n]){
 	if( x >= n || y >= n || x <0 || y < 0)return false;
     if(map[x][y].mycell!=NULL || map[x][y].type==3){
