@@ -48,20 +48,26 @@ int show_menu(void){
     scanf("%d",&q);
     return q;
 }
-
-
-void remove_cell(cell*head,cell*c){
-    cell*current=head;
-    for(current=head;current->next!=c;current=current->next);
-    current->next=current->next->next;
-    free(c);
+int show_menu2(void){
+	printf("[1] Move\n[2] Split cell\n[3] Boost energy\n[4] Save\n[5] Exit\n");
+	int q;
+	scanf("%d",&q);
+	return q;
+}
+int show_menu_moves(void){
+	printf("[1]North\n[2]South\n[3]NorthEast\n[4]NorthWest\n[5]SouthEast\n[6]SouthWest\n");
+	int q;
+	scanf("%d" , &q);
+	return q;
 
 }
-void print_cell(cell*head){
+
+
+
+void print_cell(cell*head , int n){
 	cell* current=head;
 	while(current!=NULL){
-		printf("(%d,%d) ",current->y, current->x);
-		printf("%s\n",current->name);
+		printf("(%d,%d) %s with %d energy \n",current->y, n-1-current->x,current->name,current->cell_energy);
 		current=current->next;
 	}
 }
