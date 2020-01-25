@@ -8,14 +8,17 @@
 #ifndef FUNCTIONS_H_INCLUDED
 #define FUNCTIONS_H_INCLUDED
 enum blocks {
-    energy = 1,
-    mitosis,
-    forbidden,
-    normal
+    Energy = 1,
+    Mitosis,
+    Forbidden,
+    Normal
     };
 
 typedef struct cell{
     char name[10];
+    char owner;
+    int x;
+    int y;
     int cell_energy;
     struct cell*next;
 }cell;
@@ -32,7 +35,7 @@ typedef struct game_data{
 }game_data;
 
 char *rand_string(size_t size) {
-    char *str = malloc((size + 1) * sizeof(char));
+    char *str = (char*)malloc((size + 1) * sizeof(char));
     const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     for (size_t i = 0; i < size; i++) {
         int key = rand() % (sizeof(charset) / sizeof(char) - 1); str[i] = charset[key];
@@ -45,82 +48,22 @@ int show_menu(void){
     scanf("%d",&q);
     return q;
 }
-void print_map(int n,block map[n][n]){
-   for(int i = 0;i < n;i++)
-    {
-      for(int j = 0;j < n;j+=2)
-      {
-        printf("__________          ");
-      }
-      printf("\n");
-      for(int j = 0;j < n;j+=2)
-      {
-        printf(" %s          " , map[i][j].type==Energy?" Energy  ":map[i][j].type==Mitosis?" Mitosis ": map[i][j].type==Forbidden?"Forbidden":" Normal  ");
-      }
-      printf("\n");
-      for(int j = 0;j < n;j+=2)
-      {
-        printf("     %c              " ,map[i][j]!=NULL?'x':' ');
-      }
-      printf("\n");
-      for(int j = 1;j < n;j+=2)
-      {
-        printf("          __________" );
-      }
-      printf("\n");
-      for(int j = 1;j < n;j+=2)
-      {
-        printf("          %s " , map[i][j].type==Energy?" Energy  ":map[i][j].type==Mitosis?" Mitosis ": map[i][j].type==Forbidden?"Forbidden":" Normal  ");
-      }
-      printf("\n");
-      for(int j = 1;j < n;j+=2)
-      {
-        printf("     %c               " ,map[i][j]!=NULL?'x':' ');
-      }
-      printf("\n");
-    }
-    for(int j = 0;j < n;j+=2)
-    {
-      printf("__________          ");
-    }
-    printf("\n");
-    for(int j = 0;j < n;j+=2)
-    {
-      printf("                    ");
-    }
-    printf("\n");
-    for(int j = 0;j < n;j+=2)
-    {
-      printf("                    ");
-    }
-    printf("\n");
-    for(int j = 1;j < n;j+=2)
-    {
-      printf("          __________" );
-    }
 
 
-}
-cell *add(int energy,cell*head,int x,int y){
-    cell* new_cell = (struct cell*) malloc(sizeof(cell));
-    new_cell->cell_energy=energy;
-    new_cell->next=NULL;
-    strcpy(new_cell->name,rand_string(10));
-    if(head==NULL){
-        head=new_cell;
-        return new_cell;
-    }
-    cell*current;
-    for(current=head;current->next!=NULL;current=current->next);
-    current->next=new_cell;
-    return new_cell;
-}
 void remove_cell(cell*head,cell*c){
     cell*current=head;
     for(current=head;current->next!=c;current=current->next);
     current->next=current->next->next;
     free(c);
 
+}
+void print_cell(cell*head){
+	cell* current=head;
+	while(current!=NULL){
+		printf("(%d,%d) ",current->y, current->x);
+		printf("%s\n",current->name);
+		current=current->next;
+	}
 }
 
 
