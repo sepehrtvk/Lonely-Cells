@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <string.h>
 
+
 #ifndef FUNCTIONS_H_INCLUDED
 #define FUNCTIONS_H_INCLUDED
 enum blocks {
@@ -22,8 +23,8 @@ typedef struct cell{
 typedef struct block{
     int x,y;
     int type;
-    int e;
-    struct cell* cell;
+    int block_energy;
+    cell* mycell;
 }block;
 typedef struct game_data{
     bool single_player;
@@ -43,6 +44,62 @@ int show_menu(void){
     printf("[1]Load\n[2]New single player game\n[3]New Multiplayer game\n[4]Exit\n");
     scanf("%d",&q);
     return q;
+}
+void print_map(int n,block map[n][n]){
+   for(int i = 0;i < n;i++)
+    {
+      for(int j = 0;j < n;j+=2)
+      {
+        printf("__________          ");
+      }
+      printf("\n");
+      for(int j = 0;j < n;j+=2)
+      {
+        printf(" %s          " , map[i][j].type==Energy?" Energy  ":map[i][j].type==Mitosis?" Mitosis ": map[i][j].type==Forbidden?"Forbidden":" Normal  ");
+      }
+      printf("\n");
+      for(int j = 0;j < n;j+=2)
+      {
+        printf("     %c              " ,map[i][j]!=NULL?'x':' ');
+      }
+      printf("\n");
+      for(int j = 1;j < n;j+=2)
+      {
+        printf("          __________" );
+      }
+      printf("\n");
+      for(int j = 1;j < n;j+=2)
+      {
+        printf("          %s " , map[i][j].type==Energy?" Energy  ":map[i][j].type==Mitosis?" Mitosis ": map[i][j].type==Forbidden?"Forbidden":" Normal  ");
+      }
+      printf("\n");
+      for(int j = 1;j < n;j+=2)
+      {
+        printf("     %c               " ,map[i][j]!=NULL?'x':' ');
+      }
+      printf("\n");
+    }
+    for(int j = 0;j < n;j+=2)
+    {
+      printf("__________          ");
+    }
+    printf("\n");
+    for(int j = 0;j < n;j+=2)
+    {
+      printf("                    ");
+    }
+    printf("\n");
+    for(int j = 0;j < n;j+=2)
+    {
+      printf("                    ");
+    }
+    printf("\n");
+    for(int j = 1;j < n;j+=2)
+    {
+      printf("          __________" );
+    }
+
+
 }
 cell *add(int energy,cell*head,int x,int y){
     cell* new_cell = (struct cell*) malloc(sizeof(cell));
