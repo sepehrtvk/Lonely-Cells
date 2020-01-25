@@ -126,12 +126,40 @@ int main() {
 						first:
 						input = getch();
 						a = input-'0';
+						while(a > 9 || a < 0)
+						{
+							input = getch();
+							a = input-'0';
+						}
 						printf("%d," , a);
 						input = getch();
+						if(input == 8){
+							printf("\b\b");
+							printf(" \b");
+							goto first;
+						}
 						b = input-'0';
+						while(b > 9 || b < 0)
+						{
+							input = getch();
+							if(input == 8)
+							{
+								printf("\b\b");
+								printf(" \b");
+								goto first;
+							}
+							b = input-'0';
+							
+						}
 						printf("%d)\n" , b);
 						b = n-1-b;
-						cell*choosed_cell = arr_block[b][a].mycell;
+						cell* choosed_cell= NULL;
+						choosed_cell = arr_block[b][a].mycell;
+						if(choosed_cell == NULL  || a > n-1 || b > n-1|| a < 0 || b < 0)
+						{
+							printf("Wrong input!\n");
+							continue;
+						}
 						int q=show_menu2();
 						if(q==1){
 							int plus_x = 0,plus_y = 0;
@@ -303,6 +331,28 @@ int main() {
 									arr_block[choosed_cell->x][choosed_cell->y].block_energy=0;
 								}
 						  }	
+						}
+						if(q == 4)
+						{
+							FILE* f = fopen("save_map.bin" , "wb");
+							if(f==NULL){
+								printf("cannot create the file\n");
+								continue;
+							}
+							fwrite(&n,sizeof(int),1,f);
+							forfor(n){
+								fwrite(&arr_block[i][j],sizeof(block),1,f);
+							}
+							fclose(f);
+							f = fopen("save_cell.bin" , "wb");
+							if(f==NULL){
+								printf("cannot create the file\n");
+								continue;
+							}
+							for(cell*current=head;current!=NULL;current=current->next){
+								fwrite(current,sizeof(cell),1,f);
+							}
+							fclose(f);
 						}
 					}
                 }
