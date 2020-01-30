@@ -12,14 +12,16 @@ enum blocks {
     Mitosis,
     Forbidden,
     Normal
-    };
+};
 
 typedef struct cell{
-    char name[10];
+    char name[11];
     char owner;
     int x;
     int y;
     int cell_energy;
+    bool cell_moved;
+    int num;
     struct cell*next;
 }cell;
 
@@ -32,6 +34,7 @@ typedef struct block{
 typedef struct game_data{
     bool single_player;
     bool load;
+    char last_team;
 }game_data;
 
 char *rand_string(size_t size) {
@@ -44,34 +47,64 @@ char *rand_string(size_t size) {
     return str; }
 int show_menu(void){
     int q;
-    printf("[1]Load\n[2]New single player game\n[3]New Multiplayer game\n[4]Exit\n");
+    printf("===============================\n");
+    printf("| [1] Load                    |\n| [2] New single player game  |\n| [3] New Multiplayer game    |\n| [4] Exit                    |\n");
+    printf("===============================\n");
+
     scanf("%d",&q);
     return q;
 }
 int show_menu2(void){
-	printf("[1] Move\n[2] Split cell\n[3] Boost energy\n[4] Save\n[5] Exit\n");
-	int q;
-	scanf("%d",&q);
-	return q;
+    printf("++++++++++++++++++++++++\n");
+    printf("+ [1] Move             +\n+ [2] Split cell       +\n+ [3] Boost energy     +\n+ [4] Save             +\n+ [5] Exit             +\n");
+    printf("++++++++++++++++++++++++\n");
+
+    int q;
+    scanf("%d",&q);
+    return q;
 }
 int show_menu_moves(void){
-	printf("[1]North\n[2]South\n[3]NorthEast\n[4]NorthWest\n[5]SouthEast\n[6]SouthWest\n");
-	int q;
-	scanf("%d" , &q);
-	return q;
+    printf("************************\n");
+    printf("* [1] North            *\n* [2] South            *\n* [3] NorthEast        *\n* [4] NorthWest        *\n* [5] SouthEast        *\n* [6] SouthWest        *\n");
+    printf("************************\n");
+
+    int q;
+    scanf("%d" , &q);
+    return q;
 
 }
 
 
 
-void print_cell(cell*head , int n){
-	cell* current=head;
-	while(current!=NULL){
-		printf("(%d,%d) %s with %d energy \n",current->y, n-1-current->x,current->name,current->cell_energy);
-		current=current->next;
-	}
+void print_cell(cell*head , int n,bool mp){
+    cell* current=head;
+    int i = 1;
+    while(current!=NULL){
+        if(mp && current->cell_moved == true) {
+            current->num = 0;
+            current=current->next;
+            continue;
+        }
+        printf("%d: %s (%d,%d) with %d energy. \n",i,current->name,current->y, n-1-current->x,current->cell_energy);
+        current->num = i;
+        current=current->next;
+        i++;
+    }
+
 }
 
+char check_turn(char team,cell*head){
+    cell*current=head;
 
+    for(current;current!=NULL;current=current->next)
+        if(current->cell_moved==false)return team;
+
+    current=head;
+    for(current;current!=NULL;current=current->next){
+        current->cell_moved = current->owner == team?true:false;
+    }
+    if(team == 'X')return 'Y';
+    else return 'X';
+}
 
 #endif
