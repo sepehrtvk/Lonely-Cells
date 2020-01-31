@@ -412,7 +412,25 @@ int main() {
                         }
                         fclose(f);
                     }
-                    if(q==5)exit(0);
+                    if(q==5){
+                        int sum1=0,sum2=0;
+                        for(current=head;current!=NULL;current=current->next){
+                            if(current->owner=='X')sum1+=current->cell_energy;
+                            else sum2+=current->cell_energy;
+                        }
+                        printf("\x1b[34m____________________________\n");
+                        if(menu_input==2)printf("Player %c your score is : %d\n",head->owner,sum1);
+                        if(menu_input==3){
+                            printf("Player %c your score is : %d\n",head->owner,sum1);
+                            printf("Player Y your score is : %d\n",sum2);}
+                        printf("____________________________\x1b[0m\n");
+                        if(menu_input==3 && sum2>sum1)printf("!PLAYER (Y) HAS WON THE GAME!");
+                        if(menu_input==3 && sum1>sum2)printf("!PLAYER (X) HAS WON THE GAME!");
+                        if(menu_input==3 && sum1==sum2)printf("!NO WINNER!");
+                        exit(0);
+                    }
+
+
                 }
         }
         break;
